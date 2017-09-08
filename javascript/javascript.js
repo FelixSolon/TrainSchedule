@@ -6,7 +6,6 @@ This website will provide up-to-date information about various trains,
 namely their arrival times and how many minutes remain until they arrive at their station.*/
 
 //create and track a list of trains and times
-var trainMasterList = []
 
 var numberOfTrains = 0
 var trainIncrement = "train" + numberOfTrains
@@ -21,13 +20,6 @@ var config = {
 };
 firebase.initializeApp(config);
 var database = firebase.database();
-database.ref().once('value', function(snapshot) {
-  if (snapshot.hasChild(numberOfTrains)) {
-    numberOfTrains = database.numberOfTrains;
-  } else {
-    return false;
-  }
-});
 $(window).on('load', function(){
     console.log("Yes this is triggering");
     database.ref().orderByChild("dateAdded").on("child_added", function(snapshot) {
@@ -35,6 +27,8 @@ $(window).on('load', function(){
               // storing the snapshot.val() in a variable for convenience
               var sv = snapshot.val();
               console.log(sv);  
+              console.log("This should be the new number" + sv.number);
+              numberOfTrains = sv.number;
               // Console.loging the last user's data
               // Change the HTML to reflect
               $("#mainTable").append("<tr><td>" + sv.number + "</td><td>" + sv.name + "</td><td>" + sv.destination + "</td><td>" + sv.frequency + "</td><td>" + sv.frequency + "</td><td>Total Billed ($)</td></tr>")
@@ -45,7 +39,8 @@ $(window).on('load', function(){
 });
 
 //stolen Firebase code
-database.ref().limitToLast(1).orderByChild("dateAdded").on("child_added", function(snapshot) {
+//So this broke literally everything when I tried to incorporate it. So it's commented out so I have it for reference if I need it, but things seem to be working.
+/*database.ref().limitToLast(1).orderByChild("dateAdded").on("child_added", function(snapshot) {
           // storing the snapshot.val() in a variable for convenience
           var sv = snapshot.val();
 
@@ -57,7 +52,7 @@ database.ref().limitToLast(1).orderByChild("dateAdded").on("child_added", functi
           // Handle the errors
         }, function(errorObject) {
           console.log("Errors handled: " + errorObject.code);
-        });
+        });*/
 //Once everything's loaded, do a thing.
 $(document).ready(function(){
 
@@ -80,8 +75,6 @@ $(document).ready(function(){
             dateAdded: firebase.database.ServerValue.TIMESTAMP}
 
         database.ref().push(postData);
-        database.ref().push({numberOfTrains: numberOfTrains})
-        console.log(trainMasterList);
         
 
 
