@@ -25,8 +25,17 @@ $(window).on('load', function(){
     database.ref().orderByChild("dateAdded").on("child_added", function(snapshot) {
         console.log("So is this");
               // storing the snapshot.val() in a variable for convenience
+              var currentTime = moment("HH:mm");
+              var a = currentTime;
+              console.log("Current Time = " + currentTime);
               var sv = snapshot.val();
               console.log(sv);  
+              var actualTime = moment(sv.firstTrainTime, "HH:mm")._i;
+              var b = actualTime;
+              console.log("This is A: " + a);
+              console.log("This is B: " + b);
+              console.log("Hopefully this is rational" + a.diff(b, 'minutes'));
+              console.log("This is a thing " + actualTime);
               console.log("This should be the new number" + sv.number);
               numberOfTrains = sv.number;
               // Console.loging the last user's data
@@ -65,6 +74,9 @@ $(document).ready(function(){
         var destination = $("#destinationForm").val().trim();
         var firstTrainTime = $("#firstTrainTimeForm").val().trim();
         var frequency = $("#frequencyForm").val().trim();
+        //abuse poor, innocent moment.js to convert input times to something rational I can do math to.
+        //ToDo: Sanitize the input and pop up a modulo or alert yelling at the user
+        var actualTime = moment(firstTrainTime, "HH:mm")._i;
         //...create a new object. Which should, hopefully, be in indexPosition "numberOfTrains". If not everything is going to break.
         numberOfTrains+=1;
 
@@ -72,6 +84,7 @@ $(document).ready(function(){
             number: numberOfTrains,
             destination: destination,
             frequency: frequency,
+            firstTrainTime: actualTime,
             dateAdded: firebase.database.ServerValue.TIMESTAMP}
 
         database.ref().push(postData);
@@ -81,6 +94,7 @@ $(document).ready(function(){
     //ends the submit button function
     });
 
+//Code this app to calculate when the next train will arrive; this should be relative to the current time.
 
 
 
@@ -91,6 +105,6 @@ $(document).ready(function(){
     Destination 
     First Train Time -- in military time
     Frequency -- in minutes
-    Code this app to calculate when the next train will arrive; this should be relative to the current time.
+
     Users from many different machines must be able to view same train times.
 Styling and theme are completely up to you. Get Creative!*/
