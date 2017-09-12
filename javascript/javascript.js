@@ -25,7 +25,7 @@ $(window).on('load', function(){
     database.ref().orderByChild("dateAdded").on("child_added", function(snapshot) {
         console.log("So is this");
               // storing the snapshot.val() in a variable for convenience
-              var currentTime = moment("HH:mm");
+              var currentTime = moment().format("HH:mm");
               var a = currentTime;
               console.log("Current Time = " + currentTime);
               var sv = snapshot.val();
@@ -34,13 +34,13 @@ $(window).on('load', function(){
               var b = actualTime;
               console.log("This is A: " + a);
               console.log("This is B: " + b);
-              console.log("Hopefully this is rational" + a.diff(b, 'minutes'));
-              console.log("This is a thing " + actualTime);
-              console.log("This should be the new number" + sv.number);
+              var difference = moment(actualTime, "HH:mm").diff(moment(currentTime, "HH:mm"), 'minutes');
+              var untilNext = difference % sv.frequency;
+              console.log("Until next train: " + untilNext);
               numberOfTrains = sv.number;
               // Console.loging the last user's data
               // Change the HTML to reflect
-              $("#mainTable").append("<tr><td>" + sv.number + "</td><td>" + sv.name + "</td><td>" + sv.destination + "</td><td>" + sv.frequency + "</td><td>" + sv.frequency + "</td><td>Total Billed ($)</td></tr>")
+              $("#mainTable").append("<tr><td>" + sv.number + "</td><td>" + sv.name + "</td><td>" + sv.destination + "</td><td>" + sv.frequency + "</td><td>" + sv.frequency + "</td><td>" + untilNext + "</td></tr>")
               // Handle the errors
             }, function(errorObject) {
               console.log("Errors handled: " + errorObject.code);
