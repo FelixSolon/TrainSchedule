@@ -38,9 +38,23 @@ $(window).on('load', function(){
               var untilNext = difference % sv.frequency;
               console.log("Until next train: " + untilNext);
               numberOfTrains = sv.number;
-              // Console.loging the last user's data
-              // Change the HTML to reflect
-              $("#mainTable").append("<tr><td>" + sv.number + "</td><td>" + sv.name + "</td><td>" + sv.destination + "</td><td>" + sv.frequency + "</td><td>" + sv.frequency + "</td><td>" + untilNext + "</td></tr>")
+              var displayDifference;
+              if (untilNext < 0){
+                console.log("I ran the first if statement!");
+                displayDifference = parseInt(sv.frequency) + parseInt(untilNext);
+                displayNextTime = moment().add(displayDifference, 'minutes').format('hh:mm A');
+                $("#mainTable").append("<tr><td>" + sv.number + "</td><td>" + sv.name + "</td><td>" + sv.destination + "</td><td>" + sv.frequency + "</td><td>" + displayNextTime + "</td><td>" + displayDifference + "</td></tr>")  
+              } else if (untilNext == 0) {
+                console.log("I ran the second if statement!");
+                displayNextTime = moment().add(sv.frequency, 'minutes').format('hh:mm A');
+                $("#mainTable").append("<tr><td>" + sv.number + "</td><td>" + sv.name + "</td><td>" + sv.destination + "</td><td>" + sv.frequency + "</td><td>" + displayNextTime + "</td><td>" + sv.frequency + "</td></tr>")
+              } else {
+              console.log("I ran the Else statement!");
+              console.log(untilNext)
+              displayNextTime = moment().add(untilNext, 'minutes').format('hh:mm A');
+              $("#mainTable").append("<tr><td>" + sv.number + "</td><td>" + sv.name + "</td><td>" + sv.destination + "</td><td>" + sv.frequency + "</td><td>" + displayNextTime + "</td><td>" + untilNext + "</td></tr>")
+              };
+
               // Handle the errors
             }, function(errorObject) {
               console.log("Errors handled: " + errorObject.code);
